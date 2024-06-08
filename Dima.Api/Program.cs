@@ -1,4 +1,5 @@
 using Dima.Api.Data;
+using Dima.Core.Models;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,10 +21,11 @@ builder.Services.AddTransient<Hanlder>();
 var app = builder.Build();
 
 app.MapPost(
-        "/v1/transactions",
+        "/v1/categories",
         (Request request, Hanlder handler)
         => handler.Handle(request))
-    .WithName("Transactions: Create")
+    .WithName("Categories: Create")
+    .WithDescription("Cria uma nova categoria")
     .Produces<Response>();
 
 app.UseSwagger();
@@ -34,11 +36,7 @@ app.Run();
 public class Request
 {
     public string Title { get; set; } = string.Empty;
-    public DateTime CreatedAt { get; set; } = DateTime.Now;
-    public int Type { get; set; }
-    public decimal Amount { get; set; }
-    public long CategoryId { get; set; }
-    public string UserId { get; set; } = string.Empty;
+    public string Description { get; set; } = string.Empty;
 }
 
 public class Response
@@ -47,14 +45,23 @@ public class Response
     public string Title { get; set; } = string.Empty;
 }
 
-public class Hanlder
+public class Hanlder(AppDbContext context)
 {
     public Response Handle(Request request)
     {
+        var category = new Category
+        {
+            Title = request.Title,
+            Description = request.Description
+        };
+        
+        context.Categories.Add(category);
+        context.SaveChanges();
+
         return new Response
         {
-            Id = 1,
-            Title = request.Title
+            Id = category.Id,
+            Title = category.Title
         };
     }
 }
