@@ -10,4 +10,5 @@ public class UpdateCategoryRequest : Request
 
     [Required(ErrorMessage = "Descrição inválida")]
     public string Description { get; set; } = string.Empty;
+    public long Id { get; set; }
 }
