@@ -1,4 +1,4 @@
-using Dima.Core.Handlers;
+﻿using Dima.Core.Handlers;
 using Dima.Core.Requests.Account;
 using Dima.Web.Security;
 using Microsoft.AspNetCore.Components;
@@ -6,7 +6,7 @@ using MudBlazor;
 
 namespace Dima.Web.Pages.Identity;
 
-public partial class RegisterPage : ComponentBase
+public partial class LoginPage : ComponentBase
 {
     #region Dependencies
     
@@ -23,11 +23,11 @@ public partial class RegisterPage : ComponentBase
     public ICookieAuthenticationStateProvider AuthenticationStateProvider { get; set; } = null!;
 
     #endregion
-
+    
     #region Properties
     
     public bool IsBusy { get; set; }
-    public RegisterRequest InputModel { get; set; } = new();
+    public LoginRequest InputModel { get; set; } = new();
 
     #endregion
 
@@ -37,9 +37,13 @@ public partial class RegisterPage : ComponentBase
     {
         var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
-        
-        if (user.Identity is  { IsAuthenticated : true })
+
+        if (user.Identity is { IsAuthenticated : true })
+        {
+            await AuthenticationStateProvider.GetAuthenticationStateAsync();
+            AuthenticationStateProvider.NotifyAuthenticationStateChanged();
             NavigationManager.NavigateTo("/");
+        }
     }
     
     #endregion
@@ -50,12 +54,12 @@ public partial class RegisterPage : ComponentBase
     {
         try
         {
-            var result = await Handler.RegisterAsync(InputModel);
+            var result = await Handler.LoginAsync(InputModel);
 
             if (result.IsSuccess)
             {
                 Snackbar.Add(result.Message, Severity.Success);
-                NavigationManager.NavigateTo("/login");
+                NavigationManager.NavigateTo("/");
             }
             else
                 Snackbar.Add(result.Message, Severity.Error);
