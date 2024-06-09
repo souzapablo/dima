@@ -1,7 +1,3 @@
-using System.Security.Claims;
-using Dima.Api.Models;
-using Microsoft.AspNetCore.Identity;
-
 namespace Dima.Api.Common.Api;
 
 public static class AppExtension
