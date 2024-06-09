@@ -4,6 +4,8 @@ namespace Dima.Web;
 
 public static class Configuration
 {
+    public const string HttpClientName = "DimaApi";
+    public static string BackendUrl { get; set; } = "http://localhost:5106";
     public static MudTheme Theme { get; set; } = new MudTheme
     {
         Typography = new Typography
